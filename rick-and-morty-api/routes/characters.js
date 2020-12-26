@@ -1,5 +1,6 @@
 const express = require('express')
 const endpoint = 'character'
+const passport = require('passport')
 
 const characterService = require('../service/characterService')
 
@@ -13,17 +14,17 @@ characterApi = app => {
             return res.status(200).send({
                 message: test
             })
-            
+
         } catch (error) {
             next(error)
         }
     })
 
-    router.get('/', async (req, res, next) => {
+    router.get('/', passport.authenticate('jwt', { session: false }), async (req, res, next) => {
         const { status, gender } = req.query
-        
+
         try {
-            const character = await characterService.getCharacters({status, gender})
+            const character = await characterService.getCharacters({ status, gender })
             res.status(200).json({
                 data: character.data,
                 message: 'Character listed'
@@ -33,12 +34,12 @@ characterApi = app => {
         }
     })
 
-    router.get('/getfavorite/:idUser', async (req, res, next) => {
+    router.get('/getfavorite/:idUser', passport.authenticate('jwt', { session: false }), async (req, res, next) => {
         const { idUser } = req.params
         try {
-            const favorites = await characterService.getFavorites({idUser})
+            const favorites = await characterService.getFavorites({ idUser })
             res.status(200).json({
-                data: favorites.data,
+                data: favorites,
                 message: 'Favorites listed'
             })
         } catch (error) {
@@ -46,7 +47,7 @@ characterApi = app => {
         }
     })
 
-    router.post('/savefavorite', async (req, res, next) => {
+    router.post('/savefavorite', passport.authenticate('jwt', { session: false }), async (req, res, next) => {
         const { idCharacter, idUser } = req.body
         console.log({ idCharacter, idUser })
         try {
@@ -60,10 +61,10 @@ characterApi = app => {
         }
     })
 
-    router.delete('/deletefavorite/:id', async (req, res, next) => {
-        const { id } = req.params
+    router.delete('/deletefavorite', passport.authenticate('jwt', { session: false }), async (req, res, next) => {
+        const { idCharacter, idUser } = req.body
         try {
-            const favoriteDelete = await characterService.deleteFavorite({ id })
+            const favoriteDelete = await characterService.deleteFavorite({ idCharacter, idUser })
             res.status(200).json({
                 data: favoriteDelete,
                 message: 'Favorite deleted'

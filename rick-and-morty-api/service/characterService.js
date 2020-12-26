@@ -20,16 +20,20 @@ const CharacterService = {
             return error
         }
     },
-    getFavorites: async ({idUser}) => {
+    getFavorites: async ({ idUser }) => {
         try {
-            const idCharacterUser = await Favorite.find({idUser})
-            const ids = idCharacterUser.map( fav => fav.idCharacter )
-            console.log(ids)
+            const idCharacterUser = await Favorite.find({ idUser })
+            console.log(idCharacterUser)
+            if (idCharacterUser.length === 0) return []
 
-            const characters = await axios.get(`${url}/${endpoint}/${ids}`)
-            return characters || []
+            const idCharacters = idCharacterUser.map(fav => fav.idCharacter)
+
+            const characters = await axios.get(`${url}/${endpoint}/${idCharacters}`)
+
+            return { characters: characters.data } || []
+
         } catch (error) {
-            
+
         }
     },
     saveFavorites: async ({ idCharacter, idUser }) => {
@@ -41,10 +45,10 @@ const CharacterService = {
             return error
         }
     },
-    deleteFavorite: async ({ id }) => {
+    deleteFavorite: async ({ idCharacter, idUser }) => {
         try {
             return await Favorite.findOneAndDelete(
-                { _id: id },
+                { idCharacter, idUser },
                 { isEndangered: false }
             )
         } catch (error) {
@@ -55,29 +59,3 @@ const CharacterService = {
 
 
 module.exports = CharacterService
-
-// class CharacterService {
-//     // constructor() {
-//     //     this.collection = 'character'
-//     //     this.monboDB = new MongoLib()
-//     // }
-
-//     async getCharacters() {
-//         const characters = await axios.get(`${characterMoks}${endpoint}`)
-//         return characters || []
-//     }
-//     async getFavorite({ tags }) {
-//         const query = tags && { tags: { $in: tags } }
-//         const favorite = await this.mongodb.getFavorite(this.collection, query)
-//         return favorite || []
-//     }
-
-//     async saveFavorite({ favorite }) {
-//         const favoriteSaved = await this.mongodb.saveFavorite(this.collection, favorite)
-//         return favoriteSaved || []
-//     }
-//     async deleteFavorite({ id }) {
-//         const favoriteDeleted = await this.mongodb.deleteFavorite(this.collection, id)
-//         return favoriteDeleted
-//     }
-// }
