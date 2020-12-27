@@ -26,9 +26,6 @@ passport.use('signup', new localStrategy(
     async (req, mail, password, done) => {
         const newUser = req.body
         try {
-            const exist = User.find({mail: newUser.mail})
-            if(exist) return done(null, false, { message: 'Usuario y/o contraseña inválida' })
-
             const user = await User.create(newUser)
             return done(null, user)
         } catch (error) {
@@ -63,7 +60,7 @@ passport.use('login', new localStrategy(
     }
 ))
 
-passport.use(new Strategy({
+passport.use('jwt', new Strategy({
     secretOrKey: config.jwtSecret,
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken()// .fromAuthHeaderWithScheme('jwt')
 }, async (token, done) => {
@@ -77,15 +74,15 @@ passport.use(new Strategy({
 
 
 
-passport.serializeUser((user, done) => {
-    done(null, user._id)
-})
+// passport.serializeUser((user, done) => {
+//     done(null, user._id)
+// })
 
-passport.deserializeUser((_id, done) => {
-    User.findById(_id, (err, done) => {
-        done(err, user)
-    })
-})
+// passport.deserializeUser((_id, done) => {
+//     User.findById(_id, (err, done) => {
+//         done(err, user)
+//     })
+// })
 
 // const { Strategy, ExtractJwt } = require('passport-jwt')
 // const User = require('../models/user')

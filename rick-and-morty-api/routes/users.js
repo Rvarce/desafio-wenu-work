@@ -35,7 +35,7 @@ userApi = app => {
         }
     })
     router.post('/login', async (req, res, next) => {
-         passport.authenticate('login', async (err, user, info) => {
+        passport.authenticate('login', async (err, user, info) => {
             console.log(user)
             try {
                 if (err || !user) return next(err)
@@ -46,8 +46,6 @@ userApi = app => {
                     const body = { _id: user._id, mail: user.mail }
                     const token = jwt.sign(body, config.jwtSecret, { expiresIn: '7d' }) //expira en una semana
                     res.status(200).json({ token: `${token}`, message: 'Autenticación exitosa' })
-
-
                 })
             } catch (error) {
                 return next(error)

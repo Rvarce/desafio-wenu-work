@@ -8,7 +8,7 @@ const CharacterService = {
         try {
             return 'Test service ok'
         } catch (error) {
-            return error
+            return new Error(error)
         }
     },
     getCharacters: async ({ status = '', gender = '' }) => {
@@ -17,7 +17,7 @@ const CharacterService = {
             const characters = await axios.get(`${url}/${endpoint}/?status=${status}&&gender=${gender}`)
             return characters || []
         } catch (error) {
-            return error
+            return new Error(error)
         }
     },
     getFavorites: async ({ idUser }) => {
@@ -33,7 +33,7 @@ const CharacterService = {
             return { characters: characters.data } || []
 
         } catch (error) {
-
+            return new Error(error)
         }
     },
     saveFavorites: async ({ idCharacter, idUser }) => {
@@ -42,7 +42,7 @@ const CharacterService = {
         try {
             return await favorite.save()
         } catch (error) {
-            return error
+            return new Error(error)
         }
     },
     deleteFavorite: async ({ idCharacter, idUser }) => {
@@ -52,7 +52,7 @@ const CharacterService = {
                 { isEndangered: false }
             )
         } catch (error) {
-            return error
+            return new Error(error)
         }
     }
 }

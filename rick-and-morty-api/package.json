@@ -4,13 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "set DEBUG=app:*&& nodemon index",
-    "start": "NODE_ENV=production node index  "
+    "dev": "SET DEBUG=app:* && SET NODE_ENV=development && nodemon index",
+    "start": "SET NODE_ENV=production && node index"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@hapi/boom": "^9.1.1",
+    "@hapi/joi": "^17.1.1",
     "axios": "^0.21.1",
     "bcrypt": "^5.0.0",
     "dotenv": "^8.2.0",

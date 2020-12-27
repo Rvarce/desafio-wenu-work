@@ -7,37 +7,17 @@ const UserService = {
         try {
             return 'Test service ok'
         } catch (error) {
-            return error
+            return new Error(error)
+
         }
     },
-    // authentication: async ({ mail, password }) => {
-    //     try {
-    //         const user = await User.findOne({ mail })
-
-    //         if (!user) return false
-    //         const isMatch = await user.matchPassword(password)
-    //         return { user, isMatch}
-
-    //     } catch (error) {
-    //         return error
-    //     }
-    // },
-    // register: async (user) => {
-    //     passport.authenticate('signup', {session: false})
-
-
-    //     const newUser = new User(user)
-    //     console.log('newUser', newUser)
-    //     try {
-    //         let user = await newUser.save()
-    //         return user
-    //     } catch (error) {
-    //         return error
-    //     }
-    // },
     getAllUser: async () => {
-        const users = await User.find({})
-        return users || []
+        try {
+            const users = await User.find({}) 
+            return users || []
+        } catch (error) {
+            return new Error(error)
+        }
     },
     deleteUser: async ({ id }) => {
         try {
@@ -46,7 +26,7 @@ const UserService = {
                 { isEndangered: false }
             )
         } catch (error) {
-            return error
+            return new Error(error)
         }
     }
 }
