@@ -25,6 +25,7 @@ passport.use('signup', new localStrategy(
     },
     async (req, mail, password, done) => {
         const newUser = req.body
+        console.log(newUser)
         try {
             const user = await User.create(newUser)
             return done(null, user)

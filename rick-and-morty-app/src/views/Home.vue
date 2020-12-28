@@ -1,6 +1,11 @@
 <template>
   <v-app>
-    <v-content>
+    <v-main>
+      <div>
+        <v-alert border="top" color="red lighten-2" dark v-if="alert">
+          {{ message }}
+        </v-alert>
+      </div>
       <v-container class="fill-height" fluid>
         <v-row align="center" justify="center">
           <v-col cols="12" sm="8" md="8">
@@ -10,20 +15,20 @@
                   <v-row>
                     <v-col cols="12" md="8">
                       <v-card-text class="mt-12">
-                        <!-- <h1 class="text-center display-2 teal--text text-accent-3">Inicia sesión en Rick and Morty</h1> -->
                         <div class="text-center">
                           <img
-                          alt="Rick and Morty logo"
-                          align-self="center"
-                          height="130"
-                          class="my-8"
-                          src="../assets/logo.png"
-                        />
+                            alt="Rick and Morty logo"
+                            align-self="center"
+                            height="130"
+                            class="my-8"
+                            src="../assets/logo.png"
+                          />
                         </div>
                         <v-form>
                           <v-text-field
                             label="Email"
                             name="Email"
+                            v-model="login.email"
                             prepend-icon="email"
                             type="text"
                             color="cyan darken-2"
@@ -32,6 +37,7 @@
                             id="password"
                             label="Password"
                             name="Password"
+                            v-model="login.password"
                             prepend-icon="lock"
                             type="password"
                             color="cyan darken-2"
@@ -39,7 +45,13 @@
                         </v-form>
                       </v-card-text>
                       <div class="text-center mt-3 mb-12">
-                        <v-btn rounded color="cyan darken-2" dark>Ingresar</v-btn>
+                        <v-btn
+                          rounded
+                          color="cyan darken-2"
+                          dark
+                          @click="submit"
+                          >Ingresar</v-btn
+                        >
                       </div>
                     </v-col>
                     <v-col cols="12" md="4" class="cyan darken-2">
@@ -62,55 +74,73 @@
                     <v-col cols="12" md="4" class="cyan darken-2">
                       <v-card-text class="white--text mt-12">
                         <h1 class="text-center display-1">Bienvenido</h1>
-                        <h5 class="text-center">¿Ya tienes una cuenta?, inicia sesión</h5>
+                        <h5 class="text-center">
+                          ¿Ya tienes una cuenta?, inicia sesión
+                        </h5>
                       </v-card-text>
                       <div class="text-center">
-                        <v-btn rounded outlined dark @click="step--">Ingresar</v-btn>
+                        <v-btn rounded outlined dark @click="step--"
+                          >Ingresar</v-btn
+                        >
                       </div>
                     </v-col>
                     <v-col cols="12" md="8">
                       <v-card-text class="mt-12">
-                        <h1 class="text-center display-2 cyan--text text--darken-2">Crear cuenta</h1>
+                        <h1
+                          class="text-center display-2 cyan--text text--darken-2"
+                        >
+                          Crear cuenta
+                        </h1>
                         <v-form>
-                          <v-text-field 
+                          <v-text-field
                             label="Nombre"
                             name="Name"
                             prepend-icon="person"
                             type="text"
                             color="cyan darken-2"
+                            v-model="register.name"
                           />
-                          <v-text-field 
+                          <v-text-field
                             label="Apellido Paterno"
                             name="Firstname"
                             prepend-icon="person"
                             type="text"
                             color="cyan darken-2"
+                            v-model="register.firstName"
                           />
-                          <v-text-field 
+                          <v-text-field
                             label="Apellido Materno"
                             name="Lastname"
                             prepend-icon="person"
                             type="text"
                             color="cyan darken-2"
+                            v-model="register.lastName"
                           />
-                          <v-text-field 
+                          <v-text-field
                             label="Email"
                             name="Email"
                             prepend-icon="email"
                             type="text"
                             color="cyan darken-2"
+                            v-model="register.mail"
                           />
-                          <v-text-field 
+                          <v-text-field
                             label="Password"
                             name="Password"
                             prepend-icon="lock"
-                            type="passoword"
+                            type="password"
                             color="cyan darken-2"
+                            v-model="register.password"
                           />
                         </v-form>
                       </v-card-text>
                       <div class="text-center mt-3 mb-12">
-                        <v-btn rounded color="cyan darken-2 white--text">Registrarse</v-btn>
+                        <v-btn
+                          rounded
+                          color="cyan darken-2 white--text"
+                          @click="signup"
+                          >Registrarse
+                        </v-btn>
                       </div>
                     </v-col>
                   </v-row>
@@ -120,17 +150,63 @@
           </v-col>
         </v-row>
       </v-container>
-    </v-content>
+    </v-main>
   </v-app>
 </template>
 
 <script>
+import authService from "../services/authService";
+
 export default {
-  data: () => ({
-    step: 1,
-  }),
+  data() {
+    return {
+      step: 1,
+      login: {
+        email: "",
+        password: "",
+      },
+      register: {
+        name: "",
+        firstName: "",
+        lastName: "",
+        mail: "",
+        password: "",
+      },
+      alert: false,
+      message: "",
+    };
+  },
   props: {
     source: String,
+  },
+  methods: {
+    submit() {
+      const { email, password } = this.login;
+      authService.login(email, password).then((res) => {
+        if (res.status === 200) {
+          localStorage.setItem("user_token", res.data.token);
+          this.$router.push("/About");
+          this.login.alert = false;
+        } else {
+          this.alert = true;
+          this.message = "Usuario y/o contraseña inválido";
+        }
+      });
+    },
+    signup() {
+      const { name, firstName, lastName, mail, password} = this.register
+      authService.signup({ name, firstName, lastName, mail, password}).then((res) => {
+        console.log(this.register)
+        if (res.status === 201) {
+          this.alert = true;
+          this.message = "Usuario resgistrado correctamente";
+        } else {
+          this.alert = true;
+          this.message =
+            "Ocurrio un problema al registrar el usuario, intente de nuevo mas tarde";
+        }
+      });
+    },
   },
 };
 </script>
