@@ -1,40 +1,7 @@
 <template>
   <v-app>
     <!-- Menu lateral -->
-    <v-navigation-drawer
-      permanent
-      expand-on-hover
-      v-model="drawer"
-      color="grey darken-3"
-      app
-    >
-      <v-app-bar-nav-icon fab color="grey darken-4"></v-app-bar-nav-icon>
-      <v-divider></v-divider>
-
-      <v-list-item class="px-2">
-        <v-list-item-avatar>
-          <v-img src="https://randomuser.me/api/portraits/men/85.jpg"></v-img>
-        </v-list-item-avatar>
-
-        <v-list-item-title class="menu-item">John Leider</v-list-item-title>
-      </v-list-item>
-
-      <v-divider></v-divider>
-
-      <v-list>
-        <v-list-item v-for="item in links" :key="item.title" link>
-          <v-list-item-icon>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-icon>
-
-          <v-list-item-content>
-            <v-list-item-title class="menu-item">
-              {{ item.title }}
-            </v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
+    <rm-navigation />
 
     <!-- Barra superior -->
     <v-app-bar color="white" app>
@@ -81,7 +48,14 @@
                 clearable
                 dense
               ></v-text-field>
-              <v-btn class="mx-2 elevation-12" fab dark small color="cyan darken-2" @click="search">
+              <v-btn
+                class="mx-2 elevation-12"
+                fab
+                dark
+                small
+                color="cyan darken-2"
+                @click="search"
+              >
                 <v-icon dark>
                   search
                 </v-icon>
@@ -121,94 +95,80 @@
     </v-main>
 
     <!--Footer -->
-    <v-footer app>
-      <h5>💻 with ❤️ by @ricardovargascelis</h5>
-    </v-footer>
+    <rm-footer />
   </v-app>
 </template>
 <script>
-import RmCharacter from "../components/Character.vue";
-import { mapState, mapActions, mapGetters } from "vuex";
+import RmCharacter from '../components/Character.vue'
+import RmFooter from '../components/layout/RmFooter'
+import RmNavigation from '../components/layout/RmNavigation'
+import { mapState, mapActions, mapGetters } from 'vuex'
 
 export default {
-  components: { RmCharacter },
+  components: { RmCharacter, RmFooter, RmNavigation },
   data() {
     return {
-      drawer: true,
-      links: [
-        {
-          icon: "home",
-          title: "Inicio",
-        },
-        {
-          icon: "favorite",
-          title: "Favoritos",
-        },
-        {
-          icon: "logout",
-          title: "Cerrar sesión",
-        },
-      ],
       selectStatus: [],
-      itemsStatus: ["Alive", "Dead", "Unknown"],
+      itemsStatus: ['Alive', 'Dead', 'Unknown'],
       selectGender: [],
-      itemsGender: ["Male", "Female", "Genderless", "Unknown"],
+      itemsGender: ['Male', 'Female', 'Genderless', 'Unknown'],
       page: 1,
-      name: "",
-    };
+      name: '',
+    }
   },
 
   created() {
-    this.getCharacters().then((res) => console.log("character ", res.results));
+    this.getCharacters().then((res) => console.log('character ', res.results))
   },
 
   computed: {
-    ...mapState(["character"]),
-    ...mapGetters(["pages"]),
+    ...mapState(['character']),
+    ...mapGetters(['pages']),
+    ...mapState(['user']),
   },
 
   watch: {
     selectStatus(status) {
-      console.log(status);
+      console.log(status)
       if (status) {
-        const gender = this.selectGender ? this.selectGender[0] : "";
-        this.page = 1;
-        this.getCharacters({ page: this.page, status, gender });
+        const gender = this.selectGender ? this.selectGender[0] : ''
+        this.page = 1
+        this.getCharacters({ page: this.page, status, gender })
       } else {
-        this.getCharacters();
+        this.getCharacters()
       }
     },
     selectGender(gender) {
-      console.log(gender);
+      console.log(gender)
       if (gender) {
-        const status = this.selectStatus ? this.selectStatus[0] : "";
-        this.page = 1;
-        this.getCharacters({ page: this.page, status, gender });
+        const status = this.selectStatus ? this.selectStatus[0] : ''
+        this.page = 1
+        this.getCharacters({ page: this.page, status, gender })
       } else {
-        this.getCharacters();
+        this.getCharacters()
       }
     },
     page(page) {
-      console.log(page);
-      const status = this.selectStatus[0];
-      const gender = this.selectGender[0];
-      this.getCharacters({ page, status, gender, name: this.name });
+      console.log(page)
+      const status = this.selectStatus[0]
+      const gender = this.selectGender[0]
+      this.getCharacters({ page, status, gender, name: this.name })
     },
   },
 
   methods: {
-    ...mapActions(["getCharacters"]),
+    ...mapActions(['getCharacters']),
     search() {
-      console.log("name ", this.name);
+      console.log('name ', this.name)
       if (this.name) {
-        this.page = 1;
-        this.getCharacters({ page: this.page, name: this.name });
+        this.page = 1
+        this.getCharacters({ page: this.page, name: this.name })
       } else {
-        this.getCharacters();
+        this.getCharacters()
       }
     },
   },
-};
+}
 </script>
 <style lang="sass">
 .menu-item

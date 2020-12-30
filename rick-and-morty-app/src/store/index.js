@@ -28,10 +28,11 @@ export default new Vuex.Store({
         })
     },
     loginUser(context, payload) {
-      const {email, password} = payload
+      const { email, password } = payload
       return authService.login(email, password).then((res) => {
         if (res.status === 200) {
           context.commit('setUser', res.data)
+          console.log('res ', res)
           return true
         } else {
           return false
@@ -40,17 +41,17 @@ export default new Vuex.Store({
     }
   },
   getters: {
-    pages (state) {
+    pages(state) {
       if (state.character.info) {
         return state.character.info.pages
       }
     },
-    token (state) {
+    token(state) {
       if (state.user) {
         return state.user.token
       }
     },
-    name (state) {
+    name(state) {
       if (state.user) {
         return state.user.name
       }

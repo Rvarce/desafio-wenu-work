@@ -182,27 +182,27 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions } from 'vuex'
 
 export default {
-  name: "Login",
+  name: 'Login',
   data() {
     return {
       step: 1,
       login: {
-        email: "",
-        password: "",
+        email: '',
+        password: '',
       },
       register: {
-        name: "",
-        firstName: "",
-        lastName: "",
-        mail: "",
-        password: "",
+        name: '',
+        firstName: '',
+        lastName: '',
+        mail: '',
+        password: '',
       },
       alert: false,
-      message: "",
-    };
+      message: '',
+    }
   },
   props: {
     source: String,
@@ -213,31 +213,31 @@ export default {
       this.loginUser(this.login).then((res) => {
         if (res) {
           console.log('login ', res)
-          this.$router.push("/");
-          this.login.alert = false;
+          this.$router.push('/')
+          this.login.alert = false
         } else {
-          this.alert = true;
-          this.message = "Usuario y/o contraseña inválido";
+          this.alert = true
+          this.message = 'Usuario y/o contraseña inválido'
         }
-      });
+      })
     },
     signup() {
-      const { name, firstName, lastName, mail, password } = this.register;
+      const { name, firstName, lastName, mail, password } = this.register
       authService
         .signup({ name, firstName, lastName, mail, password })
         .then((res) => {
-          console.log(this.register);
+          console.log(this.register)
           if (res.status === 201) {
-            this.alert = true;
-            this.message = "Usuario resgistrado correctamente";
+            this.alert = true
+            this.message = 'Usuario resgistrado correctamente'
           } else {
-            this.alert = true;
+            this.alert = true
             this.message =
-              "Ocurrio un problema al registrar el usuario, intente de nuevo mas tarde";
+              'Ocurrio un problema al registrar el usuario, intente de nuevo mas tarde'
           }
-        });
+        })
     },
   },
-};
+}
 </script>
 <style lang="scss"></style>

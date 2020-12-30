@@ -43,9 +43,9 @@ userApi = app => {
                 req.login(user, { session: false }, async error => {
                     if (error) return next(error)
 
-                    const body = { _id: user._id, name: `${user.name} ${user.firstName}` }
+                    const body = { _id: user._id, mail: user.mail }
                     const token = jwt.sign(body, config.jwtSecret, { expiresIn: '7d' }) //expira en una semana
-                    res.status(200).json({ token: `${token}`, message: 'Autenticación exitosa' })
+                    res.status(200).json({ token, name: `${user.name} ${user.firstName}` })
                 })
             } catch (error) {
                 return next(error)

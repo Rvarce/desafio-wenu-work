@@ -5,9 +5,9 @@ const apiUrl = process.env.VUE_APP_API_URL
 const characterService = {}
 
 characterService.getCharacters = async (page = 1, status = '', gender = '', name = '') => {
-    console.log({page, status, gender, name})
+    console.log({ page, status, gender, name })
     try {
-        const response = await axios.post(`${apiUrl}/api/character`, {page, status, gender, name})
+        const response = await axios.post(`${apiUrl}/api/character`, { page, status, gender, name })
         return response.data.data
     } catch (error) {
         const status = error.response.data.statusCode
