@@ -4,19 +4,6 @@ const { Strategy, ExtractJwt } = require('passport-jwt')
 const { config } = require('../config')
 const User = require('../models/user')
 
-const passportJWTOptions = {
-    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-    secretOrKey: config.jwtSecret,
-    algorithms: ['RS256'],
-    ignoreExpiration: false,
-    jsonWebTokenOption: {
-        complete: false,
-        clocktolerance: '',
-        maxAge: '2d', //2 dias
-        clockTimestamp: '100'
-    }
-}
-
 passport.use('signup', new localStrategy(
     {
         usernameField: 'mail',
@@ -63,7 +50,7 @@ passport.use('login', new localStrategy(
 
 passport.use('jwt', new Strategy({
     secretOrKey: config.jwtSecret,
-    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken()// .fromAuthHeaderWithScheme('jwt')
+    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken()
 }, async (token, done) => {
     console.log(token)
     try {

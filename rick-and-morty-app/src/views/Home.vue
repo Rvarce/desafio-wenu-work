@@ -1,212 +1,216 @@
 <template>
   <v-app>
+    <!-- Menu lateral -->
+    <v-navigation-drawer
+      permanent
+      expand-on-hover
+      v-model="drawer"
+      color="grey darken-3"
+      app
+    >
+      <v-app-bar-nav-icon fab color="grey darken-4"></v-app-bar-nav-icon>
+      <v-divider></v-divider>
+
+      <v-list-item class="px-2">
+        <v-list-item-avatar>
+          <v-img src="https://randomuser.me/api/portraits/men/85.jpg"></v-img>
+        </v-list-item-avatar>
+
+        <v-list-item-title class="menu-item">John Leider</v-list-item-title>
+      </v-list-item>
+
+      <v-divider></v-divider>
+
+      <v-list>
+        <v-list-item v-for="item in links" :key="item.title" link>
+          <v-list-item-icon>
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <v-list-item-title class="menu-item">
+              {{ item.title }}
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
+
+    <!-- Barra superior -->
+    <v-app-bar color="white" app>
+      <h1>Rick and Morty</h1>
+    </v-app-bar>
+
+    <!-- Body, se muestra listado de personajes -->
     <v-main>
-      <div>
-        <v-alert border="top" color="red lighten-2" dark v-if="alert">
-          {{ message }}
-        </v-alert>
-      </div>
-      <v-container class="fill-height" fluid>
-        <v-row align="center" justify="center">
-          <v-col cols="12" sm="8" md="8">
-            <v-card class="elevation-12">
-              <v-window v-model="step">
-                <v-window-item :value="1">
-                  <v-row>
-                    <v-col cols="12" md="8">
-                      <v-card-text class="mt-12">
-                        <div class="text-center">
-                          <img
-                            alt="Rick and Morty logo"
-                            align-self="center"
-                            height="130"
-                            class="my-8"
-                            src="../assets/logo.png"
-                          />
-                        </div>
-                        <v-form>
-                          <v-text-field
-                            label="Email"
-                            name="Email"
-                            v-model="login.email"
-                            prepend-icon="email"
-                            type="text"
-                            color="cyan darken-2"
-                          />
-                          <v-text-field
-                            id="password"
-                            label="Password"
-                            name="Password"
-                            v-model="login.password"
-                            prepend-icon="lock"
-                            type="password"
-                            color="cyan darken-2"
-                          />
-                        </v-form>
-                      </v-card-text>
-                      <div class="text-center mt-3 mb-12">
-                        <v-btn
-                          rounded
-                          color="cyan darken-2"
-                          dark
-                          @click="submit"
-                          >Ingresar</v-btn
-                        >
-                      </div>
-                    </v-col>
-                    <v-col cols="12" md="4" class="cyan darken-2">
-                      <v-card-text class="white--text mt-12">
-                        <h1 class="text-center display-1">¡Hola, amigos!</h1>
-                        <h5 class="text-center">
-                          Registrate y comienza la aventura
-                        </h5>
-                      </v-card-text>
-                      <div class="text-center">
-                        <v-btn rounded outlined="" dark @click="step++"
-                          >Registrarse</v-btn
-                        >
-                      </div>
-                    </v-col>
-                  </v-row>
-                </v-window-item>
-                <v-window-item :value="2">
-                  <v-row class="fill-heigth">
-                    <v-col cols="12" md="4" class="cyan darken-2">
-                      <v-card-text class="white--text mt-12">
-                        <h1 class="text-center display-1">Bienvenido</h1>
-                        <h5 class="text-center">
-                          ¿Ya tienes una cuenta?, inicia sesión
-                        </h5>
-                      </v-card-text>
-                      <div class="text-center">
-                        <v-btn rounded outlined dark @click="step--"
-                          >Ingresar</v-btn
-                        >
-                      </div>
-                    </v-col>
-                    <v-col cols="12" md="8">
-                      <v-card-text class="mt-12">
-                        <h1
-                          class="text-center display-2 cyan--text text--darken-2"
-                        >
-                          Crear cuenta
-                        </h1>
-                        <v-form>
-                          <v-text-field
-                            label="Nombre"
-                            name="Name"
-                            prepend-icon="person"
-                            type="text"
-                            color="cyan darken-2"
-                            v-model="register.name"
-                          />
-                          <v-text-field
-                            label="Apellido Paterno"
-                            name="Firstname"
-                            prepend-icon="person"
-                            type="text"
-                            color="cyan darken-2"
-                            v-model="register.firstName"
-                          />
-                          <v-text-field
-                            label="Apellido Materno"
-                            name="Lastname"
-                            prepend-icon="person"
-                            type="text"
-                            color="cyan darken-2"
-                            v-model="register.lastName"
-                          />
-                          <v-text-field
-                            label="Email"
-                            name="Email"
-                            prepend-icon="email"
-                            type="text"
-                            color="cyan darken-2"
-                            v-model="register.mail"
-                          />
-                          <v-text-field
-                            label="Password"
-                            name="Password"
-                            prepend-icon="lock"
-                            type="password"
-                            color="cyan darken-2"
-                            v-model="register.password"
-                          />
-                        </v-form>
-                      </v-card-text>
-                      <div class="text-center mt-3 mb-12">
-                        <v-btn
-                          rounded
-                          color="cyan darken-2 white--text"
-                          @click="signup"
-                          >Registrarse
-                        </v-btn>
-                      </div>
-                    </v-col>
-                  </v-row>
-                </v-window-item>
-              </v-window>
-            </v-card>
+      <v-container fluid class="mx-16 mt-16">
+        <v-row>
+          <v-col cols="3">
+            <v-combobox
+              v-model="selectStatus"
+              :items="itemsStatus"
+              label="Estado"
+              outlined
+              clearable
+              fluid
+              color="cyan darken-2"
+              dense
+            ></v-combobox>
+          </v-col>
+          <v-col cols="3">
+            <v-combobox
+              v-model="selectGender"
+              :items="itemsGender"
+              label="Genero"
+              outlined
+              clearable
+              fluid
+              color="cyan darken-2"
+              dense
+            ></v-combobox>
+          </v-col>
+          <v-col cols="3">
+            <v-list-item>
+              <v-text-field
+                v-model="name"
+                name="Buscar"
+                label="Buscar"
+                id="id"
+                fluid
+                color="cyan darken-2"
+                clearable
+                dense
+              ></v-text-field>
+              <v-btn class="mx-2 elevation-12" fab dark small color="cyan darken-2" @click="search">
+                <v-icon dark>
+                  search
+                </v-icon>
+              </v-btn>
+            </v-list-item>
           </v-col>
         </v-row>
       </v-container>
+      <v-container fluid>
+        <v-flex class="">
+          <v-layout wrap v-if="character">
+            <v-flex v-for="c in character.results" :key="c.id" class="">
+              <rm-character :character="c" />
+            </v-flex>
+          </v-layout>
+        </v-flex>
+      </v-container>
+
+      <!-- Paginacion -->
+      <div class="text-center">
+        <v-container>
+          <v-row justify="center">
+            <v-col cols="8">
+              <v-container class="max-width">
+                <v-pagination
+                  v-model="page"
+                  class="my-4"
+                  :length="pages"
+                  circle
+                ></v-pagination>
+              </v-container>
+            </v-col>
+          </v-row>
+        </v-container>
+      </div>
+      <!--  -->
     </v-main>
+
+    <!--Footer -->
+    <v-footer app>
+      <h5>💻 with ❤️ by @ricardovargascelis</h5>
+    </v-footer>
   </v-app>
 </template>
-
 <script>
-import authService from "../services/authService";
+import RmCharacter from "../components/Character.vue";
+import { mapState, mapActions, mapGetters } from "vuex";
 
 export default {
+  components: { RmCharacter },
   data() {
     return {
-      step: 1,
-      login: {
-        email: "",
-        password: "",
-      },
-      register: {
-        name: "",
-        firstName: "",
-        lastName: "",
-        mail: "",
-        password: "",
-      },
-      alert: false,
-      message: "",
+      drawer: true,
+      links: [
+        {
+          icon: "home",
+          title: "Inicio",
+        },
+        {
+          icon: "favorite",
+          title: "Favoritos",
+        },
+        {
+          icon: "logout",
+          title: "Cerrar sesión",
+        },
+      ],
+      selectStatus: [],
+      itemsStatus: ["Alive", "Dead", "Unknown"],
+      selectGender: [],
+      itemsGender: ["Male", "Female", "Genderless", "Unknown"],
+      page: 1,
+      name: "",
     };
   },
-  props: {
-    source: String,
+
+  created() {
+    this.getCharacters().then((res) => console.log("character ", res.results));
   },
-  methods: {
-    submit() {
-      const { email, password } = this.login;
-      authService.login(email, password).then((res) => {
-        if (res.status === 200) {
-          localStorage.setItem("user_token", res.data.token);
-          this.$router.push("/About");
-          this.login.alert = false;
-        } else {
-          this.alert = true;
-          this.message = "Usuario y/o contraseña inválido";
-        }
-      });
+
+  computed: {
+    ...mapState(["character"]),
+    ...mapGetters(["pages"]),
+  },
+
+  watch: {
+    selectStatus(status) {
+      console.log(status);
+      if (status) {
+        const gender = this.selectGender ? this.selectGender[0] : "";
+        this.page = 1;
+        this.getCharacters({ page: this.page, status, gender });
+      } else {
+        this.getCharacters();
+      }
     },
-    signup() {
-      const { name, firstName, lastName, mail, password} = this.register
-      authService.signup({ name, firstName, lastName, mail, password}).then((res) => {
-        console.log(this.register)
-        if (res.status === 201) {
-          this.alert = true;
-          this.message = "Usuario resgistrado correctamente";
-        } else {
-          this.alert = true;
-          this.message =
-            "Ocurrio un problema al registrar el usuario, intente de nuevo mas tarde";
-        }
-      });
+    selectGender(gender) {
+      console.log(gender);
+      if (gender) {
+        const status = this.selectStatus ? this.selectStatus[0] : "";
+        this.page = 1;
+        this.getCharacters({ page: this.page, status, gender });
+      } else {
+        this.getCharacters();
+      }
+    },
+    page(page) {
+      console.log(page);
+      const status = this.selectStatus[0];
+      const gender = this.selectGender[0];
+      this.getCharacters({ page, status, gender, name: this.name });
+    },
+  },
+
+  methods: {
+    ...mapActions(["getCharacters"]),
+    search() {
+      console.log("name ", this.name);
+      if (this.name) {
+        this.page = 1;
+        this.getCharacters({ page: this.page, name: this.name });
+      } else {
+        this.getCharacters();
+      }
     },
   },
 };
 </script>
+<style lang="sass">
+.menu-item
+  color: white
+</style>

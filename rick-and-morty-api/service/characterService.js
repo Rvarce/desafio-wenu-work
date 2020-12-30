@@ -11,10 +11,10 @@ const CharacterService = {
             return new Error(error)
         }
     },
-    getCharacters: async ({ status = '', gender = '' }) => {
-        console.log(status, gender)
+    getCharacters: async (page = 1, status = '', gender = '', name = '') => {
+        console.log(page, status, gender, name)
         try {
-            const characters = await axios.get(`${url}/${endpoint}/?status=${status}&&gender=${gender}`)
+            const characters = await axios.get(`${url}/${endpoint}?page=${page}&status=${status}&gender=${gender}&name=${name}`)
             return characters || []
         } catch (error) {
             return new Error(error)

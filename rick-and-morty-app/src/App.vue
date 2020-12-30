@@ -1,4 +1,4 @@
-<template>
+<template >
     <v-app id="inspire">
         <router-view />
     </v-app>
@@ -6,6 +6,10 @@
 <script>
 export default {
     name: 'App',
-    components: {}
+    components: {},
+      data(){
+          return{color: '#e6e6e6'}
+      } 
+
 }
 </script>

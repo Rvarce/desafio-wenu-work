@@ -20,11 +20,11 @@ characterApi = app => {
         }
     })
 
-    router.get('/', passport.authenticate('jwt', { session: false }), async (req, res, next) => {
-        const { status, gender } = req.query
-
+    router.post('/', async (req, res, next) => {
+        const { page, status, gender, name } = req.body
+        console.log({ page, status, gender, name })
         try {
-            const character = await characterService.getCharacters({ status, gender })
+            const character = await characterService.getCharacters(page, status, gender, name)
             res.status(200).json({
                 data: character.data,
                 message: 'Character listed'
@@ -34,7 +34,7 @@ characterApi = app => {
         }
     })
 
-    router.get('/getfavorite/:idUser', passport.authenticate('jwt', { session: false }), async (req, res, next) => {
+    router.get('/getfavorite', passport.authenticate('jwt', { session: false }), async (req, res, next) => {
         const { idUser } = req.params
         try {
             const favorites = await characterService.getFavorites({ idUser })
