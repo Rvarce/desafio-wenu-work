@@ -39,6 +39,8 @@
                             prepend-icon="email"
                             type="text"
                             color="cyan darken-2"
+                            :rules="emailRules"
+                            required
                           />
                           <v-text-field
                             id="password"
@@ -48,6 +50,8 @@
                             prepend-icon="lock"
                             type="password"
                             color="cyan darken-2"
+                            :rules="passRules"
+                            required
                           />
                         </v-form>
                       </v-card-text>
@@ -108,6 +112,8 @@
                                 type="text"
                                 color="cyan darken-2"
                                 v-model="register.name"
+                                :rules="nameRules"
+                                required
                               />
                             </v-col>
                           </v-row>
@@ -121,6 +127,8 @@
                                 color="cyan darken-2"
                                 v-model="register.firstName"
                                 small
+                                :rules="apRules"
+                                required
                               />
                             </v-col>
                             <v-col>
@@ -144,6 +152,8 @@
                                 type="text"
                                 color="cyan darken-2"
                                 v-model="register.mail"
+                                :rules="emailRules"
+                                required
                               />
                             </v-col>
                           </v-row>
@@ -156,6 +166,8 @@
                                 type="password"
                                 color="cyan darken-2"
                                 v-model="register.password"
+                                :rules="passRules"
+                                required
                               />
                             </v-col>
                           </v-row>
@@ -193,6 +205,13 @@ export default {
         email: '',
         password: '',
       },
+      emailRules: [
+        v => !!v || 'E-mail es requerido',
+        v => /.+@.+/.test(v) || 'Ingrese un E-mail valido',
+      ],
+      passRules: [
+        v => !!v || 'Password es requerido'
+      ],
       register: {
         name: '',
         firstName: '',
@@ -200,6 +219,12 @@ export default {
         mail: '',
         password: '',
       },
+      nameRules: [
+        v => !!v || 'Nombre es requerido'
+      ],
+      apRules: [
+        v => !!v || 'Apellido paterno es requerido'
+      ],
       alert: false,
       message: '',
     }

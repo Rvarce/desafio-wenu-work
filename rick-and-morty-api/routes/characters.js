@@ -22,7 +22,6 @@ characterApi = app => {
 
     router.post('/', async (req, res, next) => {
         const { page, status, gender, name } = req.body
-        console.log({ page, status, gender, name })
         try {
             const character = await characterService.getCharacters(page, status, gender, name)
             res.status(200).json({
@@ -35,9 +34,10 @@ characterApi = app => {
     })
 
     router.get('/getfavorite', passport.authenticate('jwt', { session: false }), async (req, res, next) => {
-        const { idUser } = req.params
+        const { user } = req
+        console.log('user ', { user })
         try {
-            const favorites = await characterService.getFavorites({ idUser })
+            const favorites = await characterService.getFavorites({ user })
             res.status(200).json({
                 data: favorites,
                 message: 'Favorites listed'
@@ -48,10 +48,10 @@ characterApi = app => {
     })
 
     router.post('/savefavorite', passport.authenticate('jwt', { session: false }), async (req, res, next) => {
-        const { idCharacter, idUser } = req.body
-        console.log({ idCharacter, idUser })
+        const { idCharacter } = req.body
+        const { user } = req
         try {
-            const characterFavorite = await characterService.saveFavorites({ idCharacter, idUser })
+            const characterFavorite = await characterService.saveFavorites({ idCharacter, idUser: user._id })
             res.status(201).json({
                 data: characterFavorite,
                 message: 'Favorite saved'
@@ -61,10 +61,12 @@ characterApi = app => {
         }
     })
 
-    router.delete('/deletefavorite', passport.authenticate('jwt', { session: false }), async (req, res, next) => {
-        const { idCharacter, idUser } = req.body
+    router.delete('/deletefavorite/:idCharacter', passport.authenticate('jwt', { session: false }), async (req, res, next) => {
+        const { idCharacter } = req.params
+        console.log('api ', idCharacter)
+        const { user } = req
         try {
-            const favoriteDelete = await characterService.deleteFavorite({ idCharacter, idUser })
+            const favoriteDelete = await characterService.deleteFavorite({ idCharacter, idUser: user._id })
             res.status(200).json({
                 data: favoriteDelete,
                 message: 'Favorite deleted'

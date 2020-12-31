@@ -31,15 +31,51 @@
         </v-list-item-content>
       </v-list-item>
     </v-list>
+
+    <v-row class="pl-3" v-if="name">
+      <v-dialog v-model="dialog" persistent max-width="290">
+        <template v-slot:activator="{ on, attrs }">
+          <v-list>
+            <v-list-item link v-bind="attrs" v-on="on">
+              <v-list-item-icon>
+                <v-icon>logout</v-icon>
+              </v-list-item-icon>
+
+              <v-list-item-content>
+                <v-list-item-title class="menu-item">
+                  Cerrar Sesión
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </template>
+        <v-card>
+          <v-card-title class="headline">
+            Cerrar sesión
+          </v-card-title>
+          <v-card-text>¿Esta seguro que desea cerrar la sesión?</v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="green darken-1" text @click="dialog = false">
+              No
+            </v-btn>
+            <v-btn color="green darken-1" text @click="redirect('/logout')">
+              Si
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-row>
   </v-navigation-drawer>
 </template>
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
-    return {}
+    return {
+      dialog: false,
+    }
   },
-
   computed: {
     ...mapGetters(['name']),
     links() {
@@ -53,11 +89,13 @@ export default {
           {
             icon: 'favorite',
             title: 'Favoritos',
+            link: '/favorite',
           },
-          {
-            icon: 'logout',
-            title: 'Cerrar sesión',
-          },
+          // {
+          //   icon: 'logout',
+          //   title: 'Cerrar sesión',
+          //   link: '/logout',
+          // },
         ]
       } else {
         return [
@@ -76,7 +114,13 @@ export default {
     },
   },
   methods: {
+    ...mapActions(['logoutUser']),
     redirect(link) {
+      if (link == '/logout') {
+        this.logoutUser()
+        link = '/'
+        this.dialog = false
+      }
       if (this.$route.path != link) {
         this.$router.push(link)
       }

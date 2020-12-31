@@ -8,7 +8,8 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     character: {},
-    user: {}
+    user: {},
+    favorite: []
   },
   mutations: {
     setCharacter(state, character) {
@@ -16,6 +17,9 @@ export default new Vuex.Store({
     },
     setUser(state, user) {
       state.user = user
+    },
+    setFavorite(state, favorite) {
+      state.favorite = favorite
     }
   },
   actions: {
@@ -38,6 +42,25 @@ export default new Vuex.Store({
           return false
         }
       });
+    },
+    logoutUser(context) {
+      context.commit('setUser', {})
+    },
+    getFavorites(context) {
+      if (context.state.user.token) {
+        return characterService.getFavorites().then( res => {
+          context.commit('setFavorite', res.data.favorite)
+          return res
+        })
+      }
+    },
+    deleteFavorite(context, payload) {
+      if (context.state.user.token) {
+        return characterService.deleteFavorites(payload).then( res => {
+          context.dispatch('getFavorites')
+          return res
+        })
+      }
     }
   },
   getters: {

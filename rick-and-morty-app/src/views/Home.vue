@@ -1,14 +1,11 @@
 <template>
   <v-app>
     <!-- Menu lateral -->
-    <rm-navigation />
+    <rm-navigation v-on:alert="alert = $event"/>
 
     <!-- Barra superior -->
-    <v-app-bar color="white" app>
-      <h1>Rick and Morty</h1>
-    </v-app-bar>
-
-    <!-- Body, se muestra listado de personajes -->
+    <rm-header />
+    <!-- Body, se muestra filtros y listado de personajes -->
     <v-main>
       <v-container fluid class="mx-16 mt-16">
         <v-row>
@@ -96,16 +93,18 @@
 
     <!--Footer -->
     <rm-footer />
+
   </v-app>
 </template>
 <script>
 import RmCharacter from '../components/Character.vue'
+import RmHeader from "../components/layout/RmHeader";
 import RmFooter from '../components/layout/RmFooter'
 import RmNavigation from '../components/layout/RmNavigation'
 import { mapState, mapActions, mapGetters } from 'vuex'
 
 export default {
-  components: { RmCharacter, RmFooter, RmNavigation },
+  components: { RmCharacter, RmFooter, RmNavigation, RmHeader },
   data() {
     return {
       selectStatus: [],
@@ -114,10 +113,12 @@ export default {
       itemsGender: ['Male', 'Female', 'Genderless', 'Unknown'],
       page: 1,
       name: '',
+      alert: false
     }
   },
 
   created() {
+    console.log('home created')
     this.getCharacters().then((res) => console.log('character ', res.results))
   },
 

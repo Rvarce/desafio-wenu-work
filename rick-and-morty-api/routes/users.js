@@ -35,8 +35,8 @@ userApi = app => {
         }
     })
     router.post('/login', async (req, res, next) => {
-        passport.authenticate('login', async (err, user, info) => {
-            console.log(user)
+        passport.authenticate('login', async (err, user) => {
+
             try {
                 if (err || !user) return next(err)
 
@@ -62,7 +62,7 @@ userApi = app => {
 
     router.delete('/deleteuser/:id', async (req, res, next) => {
         const { id } = req.params
-        console.log(id)
+  
         try {
             const userDelete = await userService.deleteUser({ id })
             res.status(200).json({
