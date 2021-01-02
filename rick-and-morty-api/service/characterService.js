@@ -27,8 +27,8 @@ const CharacterService = {
             const idCharacters = idCharacterUser.map(fav => fav.idCharacter)
 
             const favorite = await axios.get(`${url}/${endpoint}/${idCharacters}`)
-            
-            return { favorite: Array.isArray(favorite.data) ? favorite.data : [favorite.data] } || []
+
+            return { character: Array.isArray(favorite.data) ? favorite.data : [favorite.data] } || []
 
         } catch (error) {
             return new Error(error)
@@ -45,14 +45,11 @@ const CharacterService = {
                     return new Error(error)
                 }
             } else {
-                return { error: true , message: 'Personaje ya existe en favoritos'}
+                return { error: true, message: 'Personaje ya existe en favoritos' }
             }
         } catch (error) {
             return new Error(error)
-            
         }
-
-       
     },
     deleteFavorite: async ({ idCharacter, idUser }) => {
         try {
@@ -65,6 +62,5 @@ const CharacterService = {
         }
     }
 }
-
 
 module.exports = CharacterService

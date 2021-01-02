@@ -34,7 +34,8 @@
               </th>
             </tr>
           </thead>
-          <tbody v-if="Array.isArray(favorite)">
+          <!-- Array.isArray(favorite) -->
+          <tbody v-if="favorite">
             <tr v-for="item in favorite" :key="item.id">
               <td class="py-6">
                 <v-avatar>
@@ -50,7 +51,7 @@
                 <v-btn
                   :loading="loading"
                   :disabled="loading"
-                  color="cyan darken-2"
+                  color="blue-grey"
                   class="ma-2 white--text"
                   fab
                   @click="delFav(item.id)"
@@ -61,11 +62,9 @@
             </tr>
           </tbody>
           <tBody v-else>
-            <td>
-              <p class="text-center">
-                No has agregado favoritos!
-              </p>
-            </td>
+            <tr>
+              <td>No has agregado favoritos!</td>
+            </tr>
           </tBody>
         </template>
       </v-simple-table>
@@ -94,10 +93,9 @@ export default {
   created() {
     if (!this.user.token) {
       this.$router.push('/')
+    } else {
+      this.getFavorites()
     }
-    this.getFavorites().then((res) => {
-      console.log('favoritos', this.favorite)
-    })
   },
   computed: {
     ...mapState(['favorite']),
@@ -117,9 +115,7 @@ export default {
     loader() {
       const l = this.loader
       this[l] = !this[l]
-
       setTimeout(() => (this[l] = false), 3000)
-
       this.loader = null
     },
   },

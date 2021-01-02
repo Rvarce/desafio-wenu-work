@@ -12,8 +12,11 @@ passport.use('signup', new localStrategy(
     },
     async (req, mail, password, done) => {
         const newUser = req.body
-        console.log(newUser)
         try {
+            const existMail = await User.find({ mail: newUser.mail })
+            if (existMail.length > 0) {
+                return done(null, false, { message: 'Email ya registrado' })
+            }
             const user = await User.create(newUser)
             return done(null, user)
         } catch (error) {
@@ -30,17 +33,16 @@ passport.use('login', new localStrategy(
     async (mail, password, done) => {
         try {
             const user = await User.findOne({ mail })
-            console.log('user', user)
 
             if (!user) {
-                return done(null, false, { message: 'Usuario y/o contraseña inválida' })
+                return done(null, false)
             }
             const isMatch = await user.matchPassword(password)
             if (!isMatch) {
-                return done(null, false, { message: 'Usuario y/o contraseña inválida' })
+                return done(null, false)
             }
 
-            return done(null, user, { message: 'Autenticación exitosa' })
+            return done(null, user)
 
         } catch (error) {
             return done(error)
@@ -52,50 +54,9 @@ passport.use('jwt', new Strategy({
     secretOrKey: config.jwtSecret,
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken()
 }, async (token, done) => {
-    console.log(token)
     try {
         return done(null, token)
     } catch (error) {
         done(error)
     }
 }))
-
-
-
-// passport.serializeUser((user, done) => {
-//     done(null, user._id)
-// })
-
-// passport.deserializeUser((_id, done) => {
-//     User.findById(_id, (err, done) => {
-//         done(err, user)
-//     })
-// })
-
-// const { Strategy, ExtractJwt } = require('passport-jwt')
-// const User = require('../models/user')
-// const { config } = require('../config')
-
-// const passport = (passport) => {
-//     const options = {}
-//     options.jwtFromRequest = ExtractJwt.fromAuthHeaderWithScheme("jwt")
-//     options.secretOrKey = config.jwtSecret
-
-//     const strategy = new Strategy(options, async (payload, done) => {
-//         try {
-//             const user = await User.findOne({ _id: payload._id })
-//             if (user) {
-//                 done(null, user)
-//             } else {
-//                 done(null, false)
-//             }
-//         } catch (error) {
-//             return done(error, false)
-//         }
-
-//     })
-
-//     passport.use(strategy)
-// }
-
-// module.exports = passport

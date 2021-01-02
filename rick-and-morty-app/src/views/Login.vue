@@ -56,11 +56,7 @@
                         </v-form>
                       </v-card-text>
                       <div class="text-center mt-3 mb-12">
-                        <v-btn
-                          rounded
-                          color="cyan darken-2"
-                          dark
-                          @click="submit"
+                        <v-btn rounded color="blue-grey" dark @click="submit"
                           >Ingresar</v-btn
                         >
                       </div>
@@ -73,7 +69,12 @@
                         </h5>
                       </v-card-text>
                       <div class="text-center">
-                        <v-btn rounded outlined="" dark @click="step++"
+                        <v-btn
+                          class="mt-4 mb-12"
+                          rounded
+                          outlined
+                          dark
+                          @click="step++"
                           >Registrarse</v-btn
                         >
                       </div>
@@ -97,9 +98,7 @@
                     </v-col>
                     <v-col cols="12" md="8">
                       <v-card-text class="mt-10">
-                        <h1
-                          class="text-center display-2 cyan--text text--darken-2"
-                        >
+                        <h1 class="text-center display-2 blue-grey--text">
                           Crear cuenta
                         </h1>
                         <v-form>
@@ -125,21 +124,10 @@
                                 prepend-icon="person"
                                 type="text"
                                 color="cyan darken-2"
-                                v-model="register.firstName"
+                                v-model="register.lastName"
                                 small
                                 :rules="apRules"
                                 required
-                              />
-                            </v-col>
-                            <v-col>
-                              <v-text-field
-                                label="Apellido Materno"
-                                name="Lastname"
-                                prepend-icon="person"
-                                type="text"
-                                color="cyan darken-2"
-                                v-model="register.lastName"
-                                small
                               />
                             </v-col>
                           </v-row>
@@ -170,13 +158,25 @@
                                 required
                               />
                             </v-col>
+                            <v-col>
+                              <v-text-field
+                                label="Confirme Password"
+                                name="Password2"
+                                prepend-icon="lock"
+                                type="password"
+                                color="cyan darken-2"
+                                v-model="register.password2"
+                                :rules="passConfirmRules"
+                                required
+                              />
+                            </v-col>
                           </v-row>
                         </v-form>
                       </v-card-text>
                       <div class="text-center mt-3 mb-12">
                         <v-btn
                           rounded
-                          color="cyan darken-2 white--text"
+                          color="blue-grey white--text"
                           @click="signup"
                           >Registrarse
                         </v-btn>
@@ -195,6 +195,7 @@
 
 <script>
 import { mapActions } from 'vuex'
+import authService from '../services/authService'
 
 export default {
   name: 'Login',
@@ -206,25 +207,25 @@ export default {
         password: '',
       },
       emailRules: [
-        v => !!v || 'E-mail es requerido',
-        v => /.+@.+/.test(v) || 'Ingrese un E-mail valido',
-      ],
-      passRules: [
-        v => !!v || 'Password es requerido'
+        (v) => !!v || 'E-mail es requerido',
+        (v) => /.+@.+/.test(v) || 'Ingrese un E-mail valido',
       ],
       register: {
         name: '',
-        firstName: '',
         lastName: '',
         mail: '',
         password: '',
+        password2: '',
       },
-      nameRules: [
-        v => !!v || 'Nombre es requerido'
+      passRules: [(v) => !!v || 'Password es requerido'],
+      passConfirmRules: [
+        (v) => !!v || 'Password es requerido',
+        () =>
+          this.register.password === this.register.password2 ||
+          'Password no coincide',
       ],
-      apRules: [
-        v => !!v || 'Apellido paterno es requerido'
-      ],
+      nameRules: [(v) => !!v || 'Nombre es requerido'],
+      apRules: [(v) => !!v || 'Apellido paterno es requerido'],
       alert: false,
       message: '',
     }
@@ -235,32 +236,43 @@ export default {
   methods: {
     ...mapActions(['loginUser']),
     submit() {
-      this.loginUser(this.login).then((res) => {
-        if (res) {
-          console.log('login ', res)
-          this.$router.push('/')
-          this.login.alert = false
-        } else {
-          this.alert = true
-          this.message = 'Usuario y/o contraseña inválido'
-        }
-      })
-    },
-    signup() {
-      const { name, firstName, lastName, mail, password } = this.register
-      authService
-        .signup({ name, firstName, lastName, mail, password })
+      this.loginUser(this.login)
         .then((res) => {
-          console.log(this.register)
-          if (res.status === 201) {
-            this.alert = true
-            this.message = 'Usuario resgistrado correctamente'
+          if (res) {
+            this.$router.push('/')
+            this.login.alert = false
           } else {
             this.alert = true
-            this.message =
-              'Ocurrio un problema al registrar el usuario, intente de nuevo mas tarde'
+            this.message = 'Usuario y/o contraseña inválido'
           }
         })
+        .catch((err) => console.log(err))
+    },
+    signup() {
+      const { name, lastName, mail, password } = this.register
+      if (name === '' || lastName === '' || mail === '' || password === '') {
+        this.alert = true
+        this.message = 'Favor ingrese todos los datos para su registro'
+      } else {
+        authService
+          .signup({ name, lastName, mail, password })
+          .then((res) => {
+            if (res.status === 201) {
+              this.alert = true
+              this.message = 'Usuario resgistrado correctamente'
+            } else {
+              if (res.data.err) {
+                this.alert = true
+                this.message = res.data.message
+              } else {
+                this.alert = true
+                this.message =
+                  'Ocurrio un problema al registrar el usuario, intente de nuevo mas tarde'
+              }
+            }
+          })
+          .catch((error) => console.log(error))
+      }
     },
   },
 }

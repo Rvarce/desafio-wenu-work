@@ -18,7 +18,9 @@
           <v-icon class="material-icons mr-2">
             account_circle
           </v-icon>
-          <span>¡Hola, {{ name }}!</span>
+          <div class="d-none d-md-flex d-lg-flex">
+            <span>¡Hola, {{ name }}!</span>
+          </div>
         </v-btn>
       </template>
       <v-dialog v-model="dialog" persistent max-width="290">
@@ -61,7 +63,9 @@
           <v-icon class="material-icons mr-2">
             login
           </v-icon>
-          <span>Iniciar sesión</span>
+          <div class="d-none d-md-flex d-lg-flex">
+            <span>Iniciar sesión</span>
+          </div>
         </v-btn>
       </template>
     </v-menu>
@@ -80,7 +84,7 @@ export default {
     ...mapGetters(['name']),
   },
   methods: {
-     ...mapActions(['logoutUser']),
+    ...mapActions(['logoutUser']),
     redirect(link) {
       if (link == '/logout') {
         this.logoutUser()

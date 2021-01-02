@@ -35,7 +35,6 @@ characterApi = app => {
 
     router.get('/getfavorite', passport.authenticate('jwt', { session: false }), async (req, res, next) => {
         const { user } = req
-        console.log('user ', { user })
         try {
             const favorites = await characterService.getFavorites({ user })
             res.status(200).json({
@@ -63,7 +62,6 @@ characterApi = app => {
 
     router.delete('/deletefavorite/:idCharacter', passport.authenticate('jwt', { session: false }), async (req, res, next) => {
         const { idCharacter } = req.params
-        console.log('api ', idCharacter)
         const { user } = req
         try {
             const favoriteDelete = await characterService.deleteFavorite({ idCharacter, idUser: user._id })

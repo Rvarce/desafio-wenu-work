@@ -36,27 +36,26 @@ export default new Vuex.Store({
       return authService.login(email, password).then((res) => {
         if (res.status === 200) {
           context.commit('setUser', res.data)
-          console.log('res ', res)
           return true
         } else {
           return false
         }
-      });
+      }).catch(err => console.log(err))
     },
     logoutUser(context) {
       context.commit('setUser', {})
     },
     getFavorites(context) {
       if (context.state.user.token) {
-        return characterService.getFavorites().then( res => {
-          context.commit('setFavorite', res.data.favorite)
+        return characterService.getFavorites().then(res => {
+          context.commit('setFavorite', res.data.character)
           return res
         })
       }
     },
     deleteFavorite(context, payload) {
       if (context.state.user.token) {
-        return characterService.deleteFavorites(payload).then( res => {
+        return characterService.deleteFavorites(payload).then(res => {
           context.dispatch('getFavorites')
           return res
         })
@@ -65,9 +64,10 @@ export default new Vuex.Store({
   },
   getters: {
     pages(state) {
-      if (state.character.info) {
-        return state.character.info.pages
-      }
+        const page = state.character?.info?.pages
+        if (typeof page != 'undefined') {
+          return page
+        }
     },
     token(state) {
       if (state.user) {
@@ -77,6 +77,11 @@ export default new Vuex.Store({
     name(state) {
       if (state.user) {
         return state.user.name
+      }
+    },
+    lastName(state) {
+      if (state.user) {
+        return state.user.lastName
       }
     }
   },

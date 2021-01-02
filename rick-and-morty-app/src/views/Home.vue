@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <!-- Menu lateral -->
-    <rm-navigation v-on:alert="alert = $event"/>
+    <rm-navigation v-on:alert="alert = $event" />
 
     <!-- Barra superior -->
     <rm-header />
@@ -9,7 +9,7 @@
     <v-main>
       <v-container fluid class="mx-16 mt-16">
         <v-row>
-          <v-col cols="3">
+          <v-col class="max-width-50" cols="4" sm="3">
             <v-combobox
               v-model="selectStatus"
               :items="itemsStatus"
@@ -21,7 +21,7 @@
               dense
             ></v-combobox>
           </v-col>
-          <v-col cols="3">
+          <v-col class="max-width-50" cols="4" sm="3">
             <v-combobox
               v-model="selectGender"
               :items="itemsGender"
@@ -33,7 +33,7 @@
               dense
             ></v-combobox>
           </v-col>
-          <v-col cols="3">
+          <v-col class="max-width-50" cols="8" sm="4">
             <v-list-item>
               <v-text-field
                 v-model="name"
@@ -50,7 +50,7 @@
                 fab
                 dark
                 small
-                color="cyan darken-2"
+                color="blue-grey"
                 @click="search"
               >
                 <v-icon dark>
@@ -93,12 +93,11 @@
 
     <!--Footer -->
     <rm-footer />
-
   </v-app>
 </template>
 <script>
 import RmCharacter from '../components/Character.vue'
-import RmHeader from "../components/layout/RmHeader";
+import RmHeader from '../components/layout/RmHeader'
 import RmFooter from '../components/layout/RmFooter'
 import RmNavigation from '../components/layout/RmNavigation'
 import { mapState, mapActions, mapGetters } from 'vuex'
@@ -107,21 +106,19 @@ export default {
   components: { RmCharacter, RmFooter, RmNavigation, RmHeader },
   data() {
     return {
-      selectStatus: [],
+      selectStatus: '',
       itemsStatus: ['Alive', 'Dead', 'Unknown'],
-      selectGender: [],
+      selectGender: '',
       itemsGender: ['Male', 'Female', 'Genderless', 'Unknown'],
       page: 1,
       name: '',
-      alert: false
+      alert: false,
     }
   },
 
   created() {
-    console.log('home created')
-    this.getCharacters().then((res) => console.log('character ', res.results))
+    this.getCharacters()
   },
-
   computed: {
     ...mapState(['character']),
     ...mapGetters(['pages']),
@@ -130,9 +127,8 @@ export default {
 
   watch: {
     selectStatus(status) {
-      console.log(status)
       if (status) {
-        const gender = this.selectGender ? this.selectGender[0] : ''
+        const gender = this.selectGender || ''
         this.page = 1
         this.getCharacters({ page: this.page, status, gender })
       } else {
@@ -140,9 +136,8 @@ export default {
       }
     },
     selectGender(gender) {
-      console.log(gender)
       if (gender) {
-        const status = this.selectStatus ? this.selectStatus[0] : ''
+        const status = this.selectStatus || ''
         this.page = 1
         this.getCharacters({ page: this.page, status, gender })
       } else {
@@ -150,9 +145,8 @@ export default {
       }
     },
     page(page) {
-      console.log(page)
-      const status = this.selectStatus[0]
-      const gender = this.selectGender[0]
+      const status = this.selectStatus || ''
+      const gender = this.selectGender || ''
       this.getCharacters({ page, status, gender, name: this.name })
     },
   },
@@ -160,10 +154,11 @@ export default {
   methods: {
     ...mapActions(['getCharacters']),
     search() {
-      console.log('name ', this.name)
       if (this.name) {
         this.page = 1
-        this.getCharacters({ page: this.page, name: this.name })
+        const status = this.selectStatus || ''
+        const gender = this.selectGender || ''
+        this.getCharacters({ page: this.page, status, gender, name: this.name })
       } else {
         this.getCharacters()
       }

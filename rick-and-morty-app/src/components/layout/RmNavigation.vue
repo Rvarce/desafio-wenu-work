@@ -1,46 +1,46 @@
 <template>
-  <v-navigation-drawer permanent expand-on-hover color="grey darken-3" app>
-    <v-app-bar-nav-icon fab color="grey darken-4"></v-app-bar-nav-icon>
+  <v-container>
+    <v-navigation-drawer permanent expand-on-hover color="blue-grey" app>
+      <v-app-bar-nav-icon fab color="grey darken-4"></v-app-bar-nav-icon>
+      <v-divider></v-divider>
 
-    <v-divider></v-divider>
-
-    <v-list-item class="px-2" v-if="name">
-      <v-list-item-avatar>
-        <v-img src="https://randomuser.me/api/portraits/men/85.jpg"></v-img>
-      </v-list-item-avatar>
-      <v-list-item-title class="menu-item">{{ name }}</v-list-item-title>
-    </v-list-item>
-
-    <v-divider></v-divider>
-
-    <v-list>
-      <v-list-item
-        v-for="item in links"
-        :key="item.title"
-        link
-        @click="redirect(item.link)"
-      >
-        <v-list-item-icon>
-          <v-icon>{{ item.icon }}</v-icon>
-        </v-list-item-icon>
-
-        <v-list-item-content>
-          <v-list-item-title class="menu-item">
-            {{ item.title }}
-          </v-list-item-title>
-        </v-list-item-content>
+      <v-list-item class="px-2" v-if="name">
+        <v-list-item-avatar>
+          <v-img src="https://randomuser.me/api/portraits/men/85.jpg"></v-img>
+        </v-list-item-avatar>
+        <v-list-item-title class="menu-item"
+          >{{ name }} {{ lastName }}</v-list-item-title
+        >
       </v-list-item>
-    </v-list>
 
-    <v-row class="pl-3" v-if="name">
-      <v-dialog v-model="dialog" persistent max-width="290">
+      <v-divider></v-divider>
+
+      <v-list>
+        <v-list-item
+          v-for="item in links"
+          :key="item.title"
+          link
+          @click="redirect(item.link)"
+        >
+          <v-list-item-icon>
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <v-list-item-title class="menu-item">
+              {{ item.title }}
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+
+      <v-dialog v-if="name" v-model="dialog" persistent max-width="290">
         <template v-slot:activator="{ on, attrs }">
           <v-list>
             <v-list-item link v-bind="attrs" v-on="on">
               <v-list-item-icon>
                 <v-icon>logout</v-icon>
               </v-list-item-icon>
-
               <v-list-item-content>
                 <v-list-item-title class="menu-item">
                   Cerrar Sesión
@@ -65,8 +65,8 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-    </v-row>
-  </v-navigation-drawer>
+    </v-navigation-drawer>
+  </v-container>
 </template>
 <script>
 import { mapGetters, mapActions } from 'vuex'
@@ -78,6 +78,7 @@ export default {
   },
   computed: {
     ...mapGetters(['name']),
+    ...mapGetters(['lastName']),
     links() {
       if (this.name) {
         return [
@@ -91,11 +92,6 @@ export default {
             title: 'Favoritos',
             link: '/favorite',
           },
-          // {
-          //   icon: 'logout',
-          //   title: 'Cerrar sesión',
-          //   link: '/logout',
-          // },
         ]
       } else {
         return [
