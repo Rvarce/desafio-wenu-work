@@ -3,6 +3,7 @@ const localStrategy = require('passport-local').Strategy
 const { Strategy, ExtractJwt } = require('passport-jwt')
 const { config } = require('../config')
 const User = require('../models/user')
+const fs = require('fs')
 
 passport.use('signup', new localStrategy(
     {
@@ -51,12 +52,16 @@ passport.use('login', new localStrategy(
 ))
 
 passport.use('jwt', new Strategy({
-    secretOrKey: config.jwtSecret,
-    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken()
+    // secretOrKey: config.jwtSecret,
+    secretOrKey: fs.readFileSync('config/jwtRS256.key'),
+    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+    algorithms: ["RS512"]
 }, async (token, done) => {
     try {
         return done(null, token)
     } catch (error) {
+        console.log(key)
+        console.log(error)
         done(error)
     }
 }))
