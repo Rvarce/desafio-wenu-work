@@ -3,6 +3,7 @@ const endpoint = 'user'
 const jwt = require('jsonwebtoken')
 const passport = require('passport')
 const { config } = require('../config')
+const fs = require('fs')
 
 const userService = require('../service/userService')
 
@@ -44,8 +45,19 @@ userApi = app => {
                 req.login(user, { session: false }, async error => {
                     if (error) return next(error)
 
-                    const body = { _id: user._id, mail: user.mail }
-                    const token = jwt.sign(body, config.jwtSecret, { expiresIn: '7d' }) //expira en una semana
+                    // const payload = { _id: user._id, mail: user.mail }
+                    // const token = jwt.sign(body, config.jwtSecret, { expiresIn: '7d' }) //expira en una semana
+
+                    const payload = {
+                        sub: user._id,
+                        iat: Date.now(),
+                        mail: user.mail
+                    }
+                    const key = fs.readFileSync('config/jwtRS256.key')
+                    console.log(key)
+                    const token = jwt.sign(JSON.stringify(payload), key, { algorithm: 'RS512'}, { expiresIn: '7d' })
+                    console.log(token)
+
                     res.status(200).json({ token, name: user.name, lastName: user.lastName })
                 })
             } catch (error) {

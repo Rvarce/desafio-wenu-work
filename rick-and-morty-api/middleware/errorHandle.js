@@ -9,7 +9,6 @@ function withErrorStack(error, stack) {
 }
 
 function logError(err, req, res, next) {
-    console.log(err)
     next(err)
 }
 
@@ -22,7 +21,6 @@ function wrapError(err, req, res, next) {
 
 function errorHandler(err, req, res, next) {
     const { output: { statusCode, payload } } = err
-    console.log('errorHandler', { output: { statusCode, payload } })
     res.status(statusCode)
     res.json(withErrorStack(payload, err.stack))
 }
